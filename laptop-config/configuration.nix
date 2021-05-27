@@ -21,7 +21,7 @@
   boot.loader = {
   	systemd-boot.enable = true;
   	efi.canTouchEfiVariables = true;
-  	systemd-boot.consoleMode = "max";
+  	systemd-boot.consoleMode = "auto";
   };
 
   networking.hostName = "Skynet"; # Define your hostname.
@@ -51,13 +51,15 @@
   
   	enable = true;
   	
-  	# Enable the Plasma 5 Desktop Environment.
-  	displayManager = { 
+  	# Enable the KDE Plasma Desktop Environment.
+  	desktopManager = { 
+  	    plasma5.enable = true;
+  	};
+  	displayManager = {
   		sddm.enable = true;
   		sddm.enableHidpi = true;
   		autoLogin.enable = true;
   		autoLogin.user = "eryk";
-  		plasma5.enable = true;
   	};
 
   	libinput = {
@@ -74,8 +76,8 @@
   	#videoDrivers = [ "modesetting" ];
   	#useGlamor = true;
 
-  	services.xserver.videoDrivers = [ "intel" ];
-  	services.xserver.deviceSection = ''
+  	videoDrivers = [ "intel" ];
+  	deviceSection = ''
     	Option "DRI" "2"
     	Option "TearFree" "true"
   '';
@@ -97,7 +99,7 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.eryk = {
-  	 home = "/home/eryk";
+     home = "/home/eryk";
      isNormalUser = true;
      description = "Eryk";
      extraGroups = [ "wheel" "networkmanager" ]; 
@@ -107,7 +109,7 @@
   
   # List packages installed in system profile. 
   environment.systemPackages = with pkgs; [
-  	 # Terminal utilities
+     # Terminal utilities
      micro xclip wget git neofetch htop
      # Internet
      google-chrome discord
