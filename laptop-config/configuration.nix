@@ -73,14 +73,21 @@
   	layout = "gb";
   	xkbVariant = "pl";
 
-  	#videoDrivers = [ "modesetting" ];
-  	#useGlamor = true;
+  	videoDrivers = [ "modesetting" ];
+  	useGlamor = true;
+  };
 
-  	videoDrivers = [ "intel" ];
-  	deviceSection = ''
-    	Option "DRI" "2"
-    	Option "TearFree" "true"
-  '';
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
   };
 
   hardware.opengl.driSupport32Bit = true;
@@ -106,6 +113,14 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+
+  nix.autoOptimiseStore = true;
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
   
   # List packages installed in system profile. 
   environment.systemPackages = with pkgs; [
