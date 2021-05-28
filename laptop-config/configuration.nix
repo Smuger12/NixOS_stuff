@@ -6,6 +6,10 @@
       ./hardware-configuration.nix
     ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  boot.kernelParams = [ "video=2560x1440@60" ];
+
   hardware.firmware = with pkgs; [
   	firmwareLinuxNonfree
   	alsa-firmware
@@ -13,15 +17,13 @@
 
   hardware.cpu.intel.updateMicrocode = true;
 
-  boot.supportedFilesystems = [ 
-  "ext4" "exfat" "fat8" "fat16" "fat32" "ntfs" 
-  ];
+  boot.supportedFilesystems = [ "ext4" "exfat" "fat8" "fat16" "fat32" "ntfs" ];
   
   # Use the systemd-boot bootloader.
   boot.loader = {
   	systemd-boot.enable = true;
   	efi.canTouchEfiVariables = true;
-  	systemd-boot.consoleMode = "auto";
+  	systemd-boot.consoleMode = "1";
   };
 
   networking.hostName = "Skynet"; # Define your hostname.
@@ -41,9 +43,8 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-     font = "Lat2-Terminus16";
+     #font = "Lat2-Terminus16";
      useXkbConfig = true;
-     #keyMap = "pl";
    };
 
   # Enable the X11 windowing system.
@@ -73,18 +74,19 @@
   	layout = "gb";
   	xkbVariant = "pl";
 
-  	videoDrivers = [ "modesetting" ];
+  	videoDrivers = [ "modesetting" "vesa" ];
   	useGlamor = true;
   };
 
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
+  
   hardware.opengl = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      intel-media-driver
+      vaapiIntel
       vaapiVdpau
       libvdpau-va-gl
     ];
@@ -104,16 +106,14 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. 
   users.users.eryk = {
      home = "/home/eryk";
      isNormalUser = true;
      description = "Eryk";
      extraGroups = [ "wheel" "networkmanager" ]; 
   };
-
-  nixpkgs.config.allowUnfree = true;
-
+  
   nix.autoOptimiseStore = true;
 
   nix.gc = {
@@ -121,15 +121,17 @@
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
+
+  nixpkgs.config.allowUnfree = true;
   
   # List packages installed in system profile. 
   environment.systemPackages = with pkgs; [
      # Terminal utilities
-     micro xclip wget git neofetch htop
+     micro xclip wget git neofetch htop 
      # Internet
      google-chrome discord
      # KDE stuff
-     partition-manager kwrited sddm-kcm
+     partition-manager kwrited sddm-kcm plasma-browser-integration
   ];
 
   # Enable the OpenSSH daemon.
