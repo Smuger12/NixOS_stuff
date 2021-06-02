@@ -61,6 +61,7 @@
   	# Enable the Desktop Environment.
   	desktopManager = { 
   	    #plasma5.enable = true;
+  	    #pantheon.enable = true;
   	    gnome.enable = true;
   	    gnome.extraGSettingsOverrides = ''
         [org.gnome.mutter]
@@ -73,6 +74,8 @@
   		#autoLogin.enable = true;
   		#autoLogin.user = "eryk";
   		gdm.enable = true;
+  		#lightdm.enable = true;
+  		#lightdm.greeters.pantheon.enable = true;
   	};
 
   	libinput = {
