@@ -8,22 +8,14 @@
 
   #boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  boot.kernelParams = [ "quiet" "udev.log_priority=3" ];
-
-  # Silent boot
-  boot.initrd.verbose = false;
-  boot.consoleLogLevel = 0;
-
-  
   hardware.firmware = with pkgs; [
   	firmwareLinuxNonfree
   	alsa-firmware
   ];
   
-
   hardware.cpu.intel.updateMicrocode = true;
 
-  boot.supportedFilesystems = [ "ext4" "exfat" "fat8" "fat16" "fat32" "ntfs" ];
+  boot.supportedFilesystems = [ "ext4" "fat8" "fat16" "fat32" "exfat" "ntfs"  ];
   
   # Use the systemd-boot bootloader.
   boot.loader = {
@@ -50,9 +42,14 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+    
+  console = { 
+    #packages = with pkgs; [ terminus_font ];
+    #font = "latarcyrheb-sun32";
+    useXkbConfig = true;
+    earlySetup = true;
+  };
   
-  console.useXkbConfig = true;
-
   # Enable the X11 windowing system.
   services.xserver = {
   
@@ -63,17 +60,16 @@
   	    #plasma5.enable = true;
   	    #pantheon.enable = true;
   	    gnome.enable = true;
-  	    gnome.extraGSettingsOverrides = ''
-        [org.gnome.mutter]
-        experimental-features='scale-monitor-framebuffer'
-  	  '';
+  	    gnome.sessionPath = with pkgs.gnome; [ mutter gnome-shell nautilus ];
   	};
+  	
   	displayManager = {
   		#sddm.enable = true;
   		#sddm.enableHidpi = true;
   		#autoLogin.enable = true;
   		#autoLogin.user = "eryk";
   		gdm.enable = true;
+  		gdm.wayland = true;
   		#lightdm.enable = true;
   		#lightdm.greeters.pantheon.enable = true;
   	};
@@ -94,13 +90,15 @@
   };
 
   services.auto-cpufreq.enable = true;
-
+  
+  # Enable codecs.
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
   
   hardware.opengl = {
     enable = true;
+    driSupport = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
       intel-media-driver
@@ -150,16 +148,15 @@
      #partition-manager kwrited sddm-kcm plasma-browser-integration
      
      # Gnome stuff
-     gnome.gnome-tweak-tool dconf gnome.dconf-editor
+     gnome.gnome-tweak-tool gnome.dconf-editor
 
      # Theming
-     materia-theme papirus-icon-theme paper-gtk-theme qogir-theme
+     materia-theme papirus-icon-theme pop-gtk-theme pop-icon-theme equilux-theme tela-icon-theme
   ];
 
-  programs.dconf.enable = true;
+  qt5.platformTheme = "gnome";
 
-  services.printing.webInterface = false;
-  services.printing.enable = false;
+  programs.dconf.enable = true;
   
   # Debloat gnome ;)
   environment.gnome.excludePackages = with pkgs; [
@@ -177,11 +174,11 @@
      gnome.gnome-clocks
      gnome-connections
      gnome.seahorse
+     gnome-tour
   ];
 
   # Enable the OpenSSH daemon.
   #services.openssh.enable = true;
-  services.openssh.passwordAuthentication = false;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
