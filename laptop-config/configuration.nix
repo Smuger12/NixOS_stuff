@@ -57,21 +57,17 @@
   	
   	# Enable the Desktop Environment.
   	desktopManager = { 
-  	    #plasma5.enable = true;
-  	    #pantheon.enable = true;
   	    gnome.enable = true;
   	    gnome.sessionPath = with pkgs.gnome; [ mutter gnome-shell nautilus ];
+        gnome.extraGSettingsOverrides = ''
+            [org.gnome.mutter]
+            experimental-features='scale-monitor-framebuffer'
+        '';
   	};
   	
   	displayManager = {
-  		#sddm.enable = true;
-  		#sddm.enableHidpi = true;
-  		#autoLogin.enable = true;
-  		#autoLogin.user = "eryk";
   		gdm.enable = true;
   		gdm.wayland = true;
-  		#lightdm.enable = true;
-  		#lightdm.greeters.pantheon.enable = true;
   	};
 
   	libinput = {
@@ -144,14 +140,11 @@
      # Internet
      google-chrome discord 
      
-     # KDE stuff
-     #partition-manager kwrited sddm-kcm plasma-browser-integration
-     
      # Gnome stuff
      gnome.gnome-tweak-tool gnome.dconf-editor
 
      # Theming
-     materia-theme papirus-icon-theme pop-gtk-theme pop-icon-theme equilux-theme tela-icon-theme
+     materia-theme papirus-icon-theme tela-icon-theme
   ];
 
   qt5.platformTheme = "gnome";
