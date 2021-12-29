@@ -59,6 +59,7 @@
   	desktopManager = { 
   	    gnome.enable = true;
   	    gnome.sessionPath = with pkgs.gnome; [ mutter gnome-shell nautilus ];
+        gnome.extraGSettingsOverridePackages = with pkgs.gnome; [ mutter gnome-shell nautilus gsettings-desktop-schemas ];
         gnome.extraGSettingsOverrides = ''
             [org.gnome.mutter]
             experimental-features='scale-monitor-framebuffer'
