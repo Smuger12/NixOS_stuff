@@ -1,6 +1,7 @@
 #!/bin/sh
 
-cp /etc/nixos/configuration.nix ./laptop-config/configuration.nix
+sudo cp -v /etc/nixos/configuration.nix ./configuration.nix
+cp -v ~/.config/nixpkgs/home.nix ./home.nix
 git add -u
 git commit -m "Updated config"
 git push
