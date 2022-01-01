@@ -177,6 +177,7 @@
      gnome-connections
      gnome.seahorse
      gnome-tour
+     gnome.cheese
   ];
 
   # Enable the OpenSSH daemon.

@@ -23,13 +23,10 @@
 
   home.packages = with pkgs; [
   	 # Internet
-     google-chrome
-     discord
+     google-chrome discord
 
      # Theming
-     materia-theme
-     papirus-icon-theme
-     tela-icon-theme
+     materia-theme papirus-icon-theme tela-icon-theme
   ];
 
   dconf.enable = true;
@@ -39,6 +36,8 @@
     };
   };
   
-  nixpkgs.config.google-chrome.commandLineArgs = lib.mkForce "--enable-features=UseOzonePlatform --ozone-platform=wayland";
-  nixpkgs.config.discord.commandLineArgs = lib.mkForce "--enable-features=UseOzonePlatform --ozone-platform=wayland";
+  nixpkgs.config.packageOverrides = pkgs: {
+    google-chrome = pkgs.google-chrome.override { commandLineArgs = "--enable-features=UseOzonePlatform --ozone-platform=wayland"; };
+  };
+  
 }
